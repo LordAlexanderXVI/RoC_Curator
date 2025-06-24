@@ -1,0 +1,157 @@
+/* theme-glitch.css (v2.0.0) - MORE GLITCHY! */
+
+:root {
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+}
+
+/* --- KEYFRAME ANIMATIONS --- */
+
+@keyframes glitch-scramble {
+  0% { clip-path: inset(85% 0 5% 0); transform: translate(-0.8ch, 0.4ch); }
+  20% { clip-path: inset(10% 0 70% 0); transform: translate(0.4ch, -0.6ch); }
+  40% { clip-path: inset(70% 0 15% 0); transform: translate(-0.6ch, 0.2ch); }
+  60% { clip-path: inset(25% 0 55% 0); transform: translate(0.5ch, 0.8ch); }
+  80% { clip-path: inset(50% 0 25% 0); transform: translate(-0.2ch, -0.4ch); }
+  100% { clip-path: inset(5% 0 80% 0); transform: translate(0, 0); }
+}
+
+@keyframes glitch-main {
+  0% { transform: translate(0); }
+  25% { transform: translate(0.2ch, -0.2ch); }
+  50% { transform: translate(-0.2ch, 0.2ch); }
+  75% { transform: translate(0.2ch, 0.2ch); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes panel-jitter {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 2px); }
+  50% { transform: translate(2px, -2px); }
+  75% { transform: translate(2px, 2px); }
+}
+
+@keyframes chromatic-aberration {
+    0%, 100% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 cyan; }
+    50% { text-shadow: -0.5px 0 0 red, 0.5px 0 0 cyan; }
+}
+
+
+/* --- BODY AND SCANLINE --- */
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #050505;
+    color: #00ff00;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    overflow-x: hidden; /* Prevent horizontal scroll, allow vertical */
+    background-image:
+        linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+    background-size: 3px 3px;
+}
+
+/* Vignette effect */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    box-shadow: inset 0 0 150px #000;
+    pointer-events: none;
+    z-index: 9998;
+}
+
+/* The scanline that follows the mouse */
+body::after {
+    content: '';
+    position: fixed;
+    top: var(--mouse-y);
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(0, 255, 0, 0.6);
+    box-shadow: 0 0 15px 5px rgba(0, 255, 0, 0.5);
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* --- GENERAL STYLING --- */
+#app-container {
+    display: flex; flex-wrap: wrap; gap: 20px;
+    width: 100%; max-width: 1400px;
+    animation: chromatic-aberration 0.1s infinite linear;
+}
+
+#main-panel, #summary-panel {
+    background-color: rgba(10, 10, 10, 0.7);
+    border: 1px solid #00ff00;
+    border-radius: 0; /* Sharp corners */
+    padding: 20px; box-sizing: border-box;
+    backdrop-filter: blur(1px);
+    animation: panel-jitter 0.3s infinite;
+}
+
+#main-panel { flex: 3; min-width: 600px; }
+#summary-panel { flex: 1; min-width: 300px; position: sticky; top: 20px; align-self: flex-start; }
+
+header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #00ff00; padding-bottom: 10px; }
+h1, h2, h3, h4 { margin: 0 0 10px 0; color: #00ff00; text-shadow: 0 0 5px #00ff00; }
+h1 { font-size: 2.5em; }
+h2 { font-size: 1.5em; }
+h3 { font-size: 1.2em; border-bottom: 1px solid #444; padding-bottom: 5px; margin-top: 20px; }
+
+label { color: #00ff00; font-weight: bold; }
+input, select, button {
+    background-color: #111; border: 1px solid #00ff00; color: #00ff00;
+    border-radius: 0; padding: 10px; width: 100%; box-sizing: border-box;
+    font-family: inherit;
+}
+input:focus, select:focus { outline: none; box-shadow: 0 0 8px #00ff00; }
+button { cursor: pointer; }
+button:hover { background: #00ff00; color: #000; }
+
+#view-switcher { display: flex; border-bottom: 2px solid #00ff00; margin-bottom: 20px; }
+.view-button { border: none; }
+.view-button.active { color: #00ff00; border-bottom-color: #00ff00; background: rgba(0, 255, 0, 0.1); }
+
+
+/* --- FIX FOR SKILLS AND FEATS & GLITCH EFFECT APPLICATION --- */
+
+/* Apply glitch effect to specific elements */
+.glitch-text {
+    position: relative;
+    animation: glitch-main 0.1s steps(2, jump-both) infinite;
+}
+.glitch-text::before,
+.glitch-text::after {
+    content: attr(data-text-glitch); /* Use a shared attribute */
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: #050505;
+    clip-path: inset(0 0 0 0); /* Ensure pseudo-elements don't overflow */
+}
+.glitch-text::before {
+    animation: glitch-scramble 0.3s steps(2, jump-both) infinite; color: red; z-index: -1;
+}
+.glitch-text::after {
+    animation: glitch-scramble 0.2s steps(2, jump-both) infinite reverse; color: cyan; z-index: -2;
+}
+
+/* Make headers glitchable by adding the class via JS */
+h1, h2, h3, h4, .view-button, .attribute-header > div {
+    /* These elements will have .glitch-text added via script */
+}
+
+/* FIX: The skills/feats rows themselves are grids, so we make the *content* inside them glitchable */
+.skills-list-header span, .skill-row span,
+.feats-list-header span, .feat-row span {
+    /* These elements will have .glitch-text added via script */
+    display: inline-block; /* Helps contain the glitch effect */
+}
+
+
+#summary-derived-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+.stat-box { border: 1px solid #00ff00; background-color: #111; }
+.derived-stat-value, .derived-stat-input { color: #fff; }
+.stat-box h4 { color: #00ff00; }

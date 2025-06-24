@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realms of Chance - Curator's Companion v2.1</title>
+    <!-- The "id" here is important for the theme switcher script -->
+    <link id="theme-stylesheet" rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="app-container">
+        <div id="main-panel">
+            <!-- THEME SELECTOR START -->
+            <div style="text-align: right; margin-bottom: 15px; position: relative; z-index: 5;">
+                <label for="theme-select">Theme: </label>
+                <select id="theme-select">
+                    <option value="theme-dark-gold.css">Dark & Gold </option>
+                </select>
+            </div>
+            <!-- THEME SELECTOR END -->
+
+            <header>
+                <h1>Realms of Chance</h1>
+                <h2>Character Creator</h2>
+            </header>
+            
+            <section id="character-info-section">
+                <div class="info-group">
+                    <label for="characterName">Character Name:</label>
+                    <input type="text" id="characterName" placeholder="Enter your hero's name...">
+                </div>
+                <div class="info-group">
+                    <label for="level-input">Character Level:</label>
+                    <input type="number" id="level-input" value="1" min="1" max="12">
+                </div>
+            </section>
+
+            <div id="view-switcher">
+                <button data-view="attributes-view" class="view-button active">Core & Lineage</button>
+                <button data-view="weapon-view" class="view-button">Weapon Creator</button>
+                <button data-view="skills-view" class="view-button">Skills & Feats</button>
+				<button data-view="magic-view" class="view-button" style="display: none;">Magic & Tomes</button>
+            </div>
+
+            <div id="attributes-view" class="view-panel">
+                <section>
+                    <h3>Choose Your Lineage</h3>
+                    <select id="race-select">
+                        <option value="">-- Select a Race --</option>
+                    </select>
+                    <div id="race-description-box" class="description-box">
+                        <p>Select a race to see its details.</p>
+                    </div>
+                </section>
+                <section>
+                    <h3>Apply a Brand? (Optional)</h3>
+                    <div id="brand-radios"></div>
+                     <div id="brand-description-box" class="description-box">
+                        <p>Selecting a Brand will replace your race's Defining Feature.</p>
+                    </div>
+                </section>
+                <section>
+                    <h3>Distribute Your Attribute Points</h3>
+                    <p>You have <strong id="points-remaining">10</strong> points remaining to spend.</p>
+                    <div class="attribute-table">
+                        <div class="attribute-header">
+                            <div>Attribute</div><div>Points Added</div><div>Bonus</div><div>Total</div><div>DC</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div id="weapon-view" class="view-panel" style="display: none;">
+                <h3>Step 4: Create Your Initial Weapon</h3>
+                <section id="weapon-category-section">
+                    <label for="weapon-category-select">1. Choose Weapon Category:</label>
+                    <select id="weapon-category-select">
+                        <option value="">-- Select a Category --</option>
+                    </select>
+                    <div id="weapon-variant-selector" style="display: none; margin-top: 15px;">
+                        <label>2. Choose Weapon Variant:</label>
+                        <div id="variant-radios">
+                            </div>
+                    </div>
+                </section>
+                <div id="weapon-customization-panel">
+                    </div>
+            </div>
+
+            <div id="skills-view" class="view-panel" style="display: none;">
+                <h3>Step 5: Spend Proficiency Points</h3>
+                <div id="pp-tracker">
+                    </div>
+					
+                <div id="skills-list-container">
+                    <h4>Skills</h4>
+                    <div class="skills-list-header">
+                        <span>Skill</span>
+                        <span>Rank</span>
+                        <span>Cost for Next</span>
+                        <span></span>
+						<span></span>
+                    </div>
+                    <div id="skills-list">
+                        </div>
+						
+				<div id="feats-list-container">
+				<h4>Feats</h4>
+				<div class="feats-list-header">
+					<span>Feat</span>
+					<span>Cost</span>
+					<span>Taken</span>
+					<span></span>
+					<span></span>
+				</div>
+				<div id="feats-list"></div>
+			</div>					
+						
+                </div>
+            </div>
+			
+			<div id="magic-view" class="view-panel" style="display: none;">
+				<h3>Magic & Tomes</h3>
+				<section id="tome-selection-section">
+					<h4>Choose a Tome</h4>
+					<div id="tome-selection-box" class="description-box">
+						<p>You must first take a feat like "Initiate of the Arcane" to unlock your magical potential.</p>
+					</div>
+					<div id="tome-radios"></div>
+				</section>
+				<section id="incantations-list-section" style="display: none;">
+					<h4>Available Incantations</h4>
+					<div id="incantations-list">
+						</div>
+				</section>
+			</div>
+        </div>
+
+        <div id="summary-panel">
+            <h2>Your Hero</h2>
+            <div id="summary-content">
+                <p><strong>Name:</strong> <span id="summary-name"></span></p>
+                <p><strong>Race:</strong> <span id="summary-race"></span></p>
+                <hr>
+                <div id="summary-derived-stats">
+                    <div class="stat-box"><h4>HP</h4><span id="summary-hp" class="derived-stat-value">--</span></div>
+					<div class="stat-box"><h4>Dice Pool</h4><span id="summary-dicepool" class="derived-stat-value">--</span></div>
+                    <div class="stat-box"><h4>Speed</h4><span id="summary-speed" class="derived-stat-value">--</span></div>
+					<div class="stat-box"><h4>PP</h4><input type="number" id="pp-input" class="derived-stat-input" value="5" readonly></div>
+                </div>
+                <hr>
+                <h3>Attributes</h3>
+                <div id="summary-attributes"></div>
+                <hr>
+                <h3>Racial & Brand Traits</h3>
+                <div id="summary-traits"><p>Select a race to see traits.</p></div>
+                <hr>
+                <h3>Weapon</h3>
+                <div id="summary-weapon"><p>No weapon created.</p></div>
+				<hr>
+				<h3>Feats</h3>
+				<div id="summary-feats"><p>No feats taken.</p></div>
+				<hr> 
+				<h3>Magic</h3> 
+				<div id="summary-magic"><p>No magic learned.</p></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- This script contains your character creator logic -->
+    <script type="module" src="script.js"></script>
+
+    <!-- This combined script handles theme switching AND the interactive background effect -->
+    <script>
+        (function() {
+            const themeSelect = document.getElementById('theme-select');
+            const themeStylesheet = document.getElementById('theme-stylesheet');
+            
+            // --- Logic for the interactive background ---
+            const handleMouseMove = (e) => {
+                const x = (e.clientX / window.innerWidth) * 100;
+                const y = (e.clientY / window.innerHeight) * 100;
+                document.documentElement.style.setProperty('--mouse-x', `${x}%`);
+                document.documentElement.style.setProperty('--mouse-y', `${y}%`);
+            };
+
+            const enableWarpedEffect = () => {
+                document.addEventListener('mousemove', handleMouseMove);
+            };
+
+            const disableWarpedEffect = () => {
+                document.removeEventListener('mousemove', handleMouseMove);
+                // Reset to default values when effect is disabled
+                document.documentElement.style.setProperty('--mouse-x', `50%`);
+                document.documentElement.style.setProperty('--mouse-y', `50%`);
+            };
+
+            // --- Logic for theme switching ---
+            const applyTheme = (themeFile) => {
+                themeStylesheet.setAttribute('href', themeFile);
+                localStorage.setItem('theme', themeFile);
+                themeSelect.value = themeFile;
+
+                // Check if the new theme is the warped theme and enable/disable the effect
+                if (themeFile === 'theme-warped.css') {
+                    enableWarpedEffect();
+                } else {
+                    disableWarpedEffect();
+                }
+            };
+
+            // Add event listener to the dropdown
+            themeSelect.addEventListener('change', (event) => {
+                applyTheme(event.target.value);
+            });
+
+            // On page load, apply the saved theme and check if the effect should be active
+            document.addEventListener('DOMContentLoaded', () => {
+                const savedTheme = localStorage.getItem('theme') || 'style.css';
+                applyTheme(savedTheme);
+            });
+        })();
+    </script>
+</body>
+</html>
